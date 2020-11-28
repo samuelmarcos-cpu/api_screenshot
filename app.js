@@ -9,17 +9,21 @@ app.get('/', async (req, res) => {
     width: parseInt(req.query.width),
     height: parseInt(req.query.height),
     landscape: !!parseInt(req.query.landscape),
-    fullPage: !!parseInt(req.query.full_page),
+    fullPage: !!parseInt(req.query.full_page)
   }
 
-  img = await utils.screenshot(req.query.url, options)
+  try {
+    img = await utils.screenshot(req.query.url, options)
 
-  res.writeHead(200, {
-    'Content-Type': 'image/png',
-    'Content-Length': img.length
-  })
-
-  res.end(img)
+    res.writeHead(200, {
+      'Content-Type': 'image/png',
+      'Content-Length': img.length
+    })
+  
+    res.end(img)
+  } catch {
+    res.status(500).send('Something broke!')
+  }
 })
 
 app.listen(port, () => {
